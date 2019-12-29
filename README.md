@@ -1,4 +1,4 @@
-# block-explorer
+# DERO Explorer
 
 ## Project setup
 ```
