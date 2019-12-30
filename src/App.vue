@@ -22,7 +22,7 @@
             <v-toolbar-items class="hidden-sm-and-down">
               <v-btn href="https://dero.io" text>Home</v-btn>
               <v-btn href="https://wallet.dero.io" text>Web Wallet</v-btn>
-              <v-btn href="http://stats.dero.io" text>Stats</v-btn>
+              <dropdown name="Stats" :items="this.statsItems"></dropdown>
             </v-toolbar-items>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -65,11 +65,28 @@
 </template>
 
 <script>
+import dropdown from './components/Dropdown'
 
 export default {
   name: 'app',
   components: {
-  }
+    dropdown
+  },
+
+  data() {
+    return {
+      statsItems: [
+        {
+          title: "Modern Stats",
+          href: "http://stats.dero.io"
+        },
+        {
+          title: "Retro Stats",
+          href: "https://network.dero.io"
+        }
+      ]
+    }
+  },
 }
 </script>
 
