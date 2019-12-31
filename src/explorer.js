@@ -16,7 +16,7 @@ export function loadTxs(txsHashes)
 
     return fetch("https://wallet.dero.io/gettransactions", {
         method: "POST",
-        mode: "cors",
+        mode: "no-cors",
         headers: {
             'Accept': 'application/json',
             "Content-Type": "application/json; charset=utf-8",

@@ -7,6 +7,7 @@
                 <li>Block Reward: {{block.block_header.reward/1000000000000}} DERO</li>
             </ul>
         </div>
+        <v-divider></v-divider>
         <div>
             <h1>Miner reward transaction</h1>
             <v-simple-table dark id="table">
