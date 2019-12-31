@@ -18,6 +18,7 @@
               single-line
               label = "Block height, block hash, transaction hash"
             ></v-text-field>
+            <v-btn to="/search" text>Search</v-btn>
             <v-spacer></v-spacer>
             <v-toolbar-items class="hidden-sm-and-down">
               <v-btn href="https://dero.io" text>Home</v-btn>
