@@ -135,6 +135,9 @@ export default {
             if (!supply)
                 return 0
             return supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        },
+        update() {
+            
         }
 
     }

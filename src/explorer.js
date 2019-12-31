@@ -14,10 +14,13 @@ export function loadTxs(txsHashes)
     body.txs_hashes.push(txsHashes)
     console.log(body)
 
-    return fetch("http://blockchain.dero.network:9999/gettransactions", {
+    return fetch("https://wallet.dero.io/gettransactions", {
         method: "POST",
+        mode: "cors",
         headers: {
-            "Content-Type": "text/plain",
+            'Accept': 'application/json',
+            "Content-Type": "application/json; charset=utf-8",
+            'Connection': 'close'
         },
         body: JSON.stringify(body)
     }).then(result => result)

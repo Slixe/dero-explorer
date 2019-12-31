@@ -17,8 +17,9 @@
               prepend-icon="search"
               single-line
               label = "Block height, block hash, transaction hash"
+              v-model="search"
             ></v-text-field>
-            <v-btn to="/search" text>Search</v-btn>
+            <v-btn @click="searchFunc()" text>Search</v-btn>
             <v-spacer></v-spacer>
             <v-toolbar-items class="hidden-sm-and-down">
               <v-btn href="https://dero.io" text>Home</v-btn>
@@ -67,6 +68,7 @@
 
 <script>
 import dropdown from './components/Dropdown'
+import * as explorer from './explorer'
 
 export default {
   name: 'app',
@@ -85,9 +87,30 @@ export default {
           title: "Retro Stats",
           href: "https://network.dero.io"
         }
-      ]
+      ],
+      search: ""
     }
   },
+  methods: { /* eslint-disable no-console */
+    async searchFunc() {
+        if (this.search) {
+            let block = await explorer.loadBlock(this.search)
+            if (block.block_header.hash === this.search || block.block_header.topoheight === this.search) {
+                this.$router.push('/block/' + this.search)
+            }
+            else {
+              /*let tx = explorer.loadTxs(this.search)
+               TODO, fix loadTxs first.
+              if (tx) {
+                this.$router.push('/tx/' + this.search)
+              }
+              else {
+                alert("Incorrect format, please specify a block height, or a block hash, or a transaction hash.")
+              }*/
+            }
+        }
+      }
+    }
 }
 </script>
 
