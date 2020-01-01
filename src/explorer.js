@@ -1,29 +1,58 @@
 /* eslint-disable no-console */
 var daemon = 'https://wallet.dero.io'
 
+export function blockDate(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let hours = date.getHours();
+    let minutes = "0" + date.getMinutes();
+    let seconds = "0" + date.getSeconds();
+    let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    return formattedTime;
+}
+
+export function formatSupply(supply) {
+    if (!supply)
+        return 0
+    return supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+}
+
 export function getInfo()
 {
     return postData("get_info")
 }
 
-export function loadTxs(txsHashes)
+export async function loadAndFormatTxs(txsHashes = [])
+{
+    const txs = {}
+
+    for (let i = 0; i < txsHashes.length; i++)
+    {
+        /*const result = await loadTxs(txsHashes[i])
+
+        let tx = {
+            valid_block: "", //block hash
+            reward: 0, //miner
+            hash: "", //tx hash
+            amount: "?",
+            fee: 0
+        }*/
+
+        
+    }
+
+    return txs
+}
+
+export function loadTxs(txsHashes = [])
 {
     const body = {
-        txs_hashes: []
-    }
-    body.txs_hashes.push(txsHashes)
-    console.log(body)
-
-    return fetch("https://wallet.dero.io/gettransactions", {
+        txs_hashes: txsHashes
+      }
+      console.log(body)
+    return fetch(daemon + "/gettransactions", {
         method: "POST",
-        mode: "no-cors",
-        headers: {
-            'Accept': 'application/json',
-            "Content-Type": "application/json; charset=utf-8",
-            'Connection': 'close'
-        },
         body: JSON.stringify(body)
-    }).then(result => result)
+    }).then(result => result.json())
 }
 
 export async function loadBlocks(pos, size)

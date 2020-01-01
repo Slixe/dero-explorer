@@ -6,13 +6,13 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <ul class="net-info">
-                        <li>Current Height: {{ formatSupply(info.height) }}</li>
-                        <li>Topo Height: {{ formatSupply(info.topoheight) }}</li>
-                        <li>Hashrate: {{ formatSupply((info.difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</li>
+                        <li>Current Height: {{ explorer.formatSupply(info.height) }}</li>
+                        <li>Topo Height: {{ explorer.formatSupply(info.topoheight) }}</li>
+                        <li>Hashrate: {{ explorer.formatSupply((info.difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</li>
                         <li>Average Block Time: {{ info.averageblocktime50 }}s</li>
-                        <li>Difficulty: {{ formatSupply(info.difficulty) }} </li>
-                        <li>Median Block Size: {{ formatSupply(info.median_block_size/1000) }} kB</li>
-                        <li>Total Supply: {{ formatSupply(info.total_supply) }} DERO</li>
+                        <li>Difficulty: {{ explorer.formatSupply(info.difficulty) }} </li>
+                        <li>Median Block Size: {{ explorer.formatSupply(info.median_block_size/1000) }} kB</li>
+                        <li>Total Supply: {{ explorer.formatSupply(info.total_supply) }} DERO</li>
                     </ul>
                 </v-card-text>
             </v-card>
@@ -32,12 +32,12 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <ul class="net-info">
-                        <li>Rank: {{ formatSupply(coinGecko.market_cap_rank) }}</li>
-                        <li>Market Cap: {{ formatSupply(coinGecko.marketcap) }} USD</li>
+                        <li>Rank: {{ explorer.formatSupply(coinGecko.market_cap_rank) }}</li>
+                        <li>Market Cap: {{ explorer.formatSupply(coinGecko.marketcap) }} USD</li>
                         <li>Price: {{ coinGecko.priceUSD }} USD / {{ coinGecko.priceBTC }} BTC</li>
                         <li>ATH: {{ coinGecko.ATHpriceUSD }} USD / {{ coinGecko.ATHpriceBTC }} BTC</li>
                         <li>ATL: {{ coinGecko.ATLpriceUSD }} USD / {{ coinGecko.ATLpriceBTC }} BTC</li>
-                        <li>24h Volume: {{ formatSupply(coinGecko.volume24hUSD) }} USD / {{ formatSupply(coinGecko.volume24hBTC) }} BTC</li>
+                        <li>24h Volume: {{ explorer.formatSupply(coinGecko.volume24hUSD) }} USD / {{ explorer.formatSupply(coinGecko.volume24hBTC) }} BTC</li>
                     </ul>
                 </v-card-text>
             </v-card>
@@ -62,7 +62,7 @@
                     <tr v-for="(block, i) in blocks" :key="i">
                     <td>{{ block.block_header.height }}</td>
                     <td>{{ block.block_header.topoheight }}</td>
-                    <td>{{ blockDate(block.block_header.timestamp) }}</td>
+                    <td>{{ explorer.blockDate(block.block_header.timestamp) }}</td>
                     <td>{{ block.block_header.txcount }}</td>
                     <td>{{ block.block_header.hash }}</td>
                     <td>{{ (block.block_header.reward / 1000000000000).toFixed(4) }} <img src="/logo.png" align="center" height="25px" width="25px" /></td>
@@ -95,19 +95,11 @@ export default {
                 ATLpriceBTC: 0,
                 marketcap: 0,
                 market_cap_rank: 0,
-            }
+            },
+            explorer
         }
     },
-    async mounted() {
-            /* eslint-disable no-console */
-          let pool = await explorer.getTxsPool()
-
-          if (pool.txs)
-            this.txs = pool.txs
-
-          this.info = await explorer.getInfo()
-          this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
-          
+    async mounted() {                  
           fetch("https://api.coingecko.com/api/v3/coins/dero?localization=en&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false")
             .then(result => result.json()).then(result => {
                 this.coinGecko.priceUSD = result.market_data.current_price.usd
@@ -121,25 +113,16 @@ export default {
                 this.coinGecko.marketcap = result.market_data.market_cap.usd
                 this.coinGecko.market_cap_rank = result.market_data.market_cap_rank
             })
+
+          let pool = await explorer.getTxsPool()
+
+          if (pool.txs)
+            this.txs = pool.txs
+
+          this.info = await explorer.getInfo()
+          this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
     },
     methods: {
-        blockDate(timestamp) {
-            let date = new Date(timestamp * 1000);
-            let hours = date.getHours();
-            let minutes = "0" + date.getMinutes();
-            let seconds = "0" + date.getSeconds();
-            let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-            return formattedTime;
-        },
-        formatSupply(supply) {
-            if (!supply)
-                return 0
-            return supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-        },
-        update() {
-            
-        }
-
     }
 }
 </script>

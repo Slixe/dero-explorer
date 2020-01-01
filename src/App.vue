@@ -95,13 +95,13 @@ export default {
     async searchFunc() {
         if (this.search) {
             let block = await explorer.loadBlock(this.search)
-            if (block && (block.block_header.hash === this.search || block.block_header.topoheight === this.search)) {
+            if (block && (block.block_header.hash === this.search || block.block_header.topoheight === parseInt(this.search))) {
                 this.$router.push('/block/' + this.search)
             }
             else {
               let tx = explorer.loadTxs(this.search)
               // TODO, fix loadTxs first.
-              if (tx) {
+              if (tx && tx.status != "TX NOT FOUND") {
                 this.$router.push('/tx/' + this.search)
               }
               else {
