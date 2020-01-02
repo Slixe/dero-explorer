@@ -1,7 +1,7 @@
 <template>
     <div id="block">
         <div id="main">
-            <h2 class="title">Block<a :to="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :to="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
+            <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
         </div>
         <v-divider class="div"></v-divider>
         <div id="boxes">
@@ -45,10 +45,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                    <td>{{ }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
                     </tr>
                 </tbody>
                 </template>
@@ -69,9 +69,10 @@
                 </thead>
                 <tbody>
                     <tr v-for="(tx, i) in block.json.tx_hashes" :key="i">
-                    <td>{{ tx.hash }}</td>
                     <td>?</td>
-                    <td>{{ tx.reward }}</td>
+                    <td>?</td>
+                    <td>?</td>
+                    <td>?</td>
                     </tr>
                 </tbody>
                 </template>
@@ -179,9 +180,11 @@ li {
 }
 
 ul {
-    margin: 0;
-    padding: 0;
     list-style: square;
+}
+
+a:link, a:visited, a:active {
+    color: white;
 }
 
 span {
