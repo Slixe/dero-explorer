@@ -1,32 +1,35 @@
 <template>
     <div id="block">
         <div id="main">
-            <h2 >Block<a @click="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a @click="previous()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
+            <h2 class="title">Block<a :to="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :to="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
         </div>
         <v-divider class="div"></v-divider>
-        <div>
-            <ul class="block-info">
+        <div id="boxes">
+            <v-card dark class="block-info">
+            <ul>
                 <li>Topo Height (unique): <span>{{explorer.formatSupply(block.block_header.topoheight)}}</span></li>
                 <li>Block Height: <span>{{explorer.formatSupply(block.block_header.height)}}</span></li>
-                <li>Timestamp: <span></span></li>
+                <li>Depth: <span>{{explorer.formatSupply(block.block_header.depth)}}</span></li>
+                <li>Timestamp: <span>{{new Date(block.block_header.timestamp * 1000).toLocaleString()}}</span></li>
             </ul>
+            </v-card>
+            <v-card dark class="block-info">
+            <ul>
+                <li>Hashrate: <span>{{ explorer.formatSupply((block.block_header.difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</span></li>
+                <li>Difficulty: <span>{{explorer.formatSupply(block.block_header.difficulty)}}</span></li>
+                <li>Reward: <span>{{(block.block_header.reward / 1000000000000).toFixed(4)}} <strong>DERO</strong></span></li>
+                <li>Nonce: <span>{{explorer.formatSupply(block.block_header.nonce)}}</span></li>
+            </ul>
+            </v-card>
+            <v-card dark class="block-info">
+            <ul>
+                <li>Major Version: <span>{{ block.block_header.major_version }}</span></li>
+                <li>Minor Version: <span>{{ block.block_header.minor_version }}</span></li>
+                <li>Block Type: <span>{{ getBlockType() }}</span></li>
+                <li>Transactions: <span>{{ block.block_header.txcount }}</span></li>
+            </ul>
+            </v-card>
         </div>
-        <!--<div id="boxes">
-            <v-card dark class="box" elevation="10">
-                    Topo Height (unique): {{explorer.formatSupply(block.block_header.topoheight)}} 
-            </v-card>
-            <v-card dark class="box" elevation="10">
-                    hell
-            </v-card>
-        </div>
-        <div id="boxes">
-            <v-card dark class="box" elevation="10">
-                   Height: {{explorer.formatSupply(block.block_header.height)}}
-            </v-card>
-            <v-card dark class="box" elevation="10">
-                   Block Reward: {{(block.block_header.reward/1000000000000).toFixed(4)}} DERO
-            </v-card>
-        </div>-->
         <v-divider class="div"></v-divider>
         <div>
             <h1>Miner reward transaction</h1>
@@ -92,11 +95,13 @@ export default {
                 }
             },
             blockID: this.$route.params.id, /* Block ID can be block Hash or Topo Height */
-            explorer
+            explorer,
+            info: {}
         }
     },
     async mounted() {
         /* eslint-disable no-console */
+        this.info = await explorer.getInfo()
         let block = await explorer.loadBlock(this.blockID)
         if (block.json)
         {
@@ -107,14 +112,32 @@ export default {
                 let txs = await explorer.loadTxs(this.block.json.tx_hashes)
                 if (txs && txs.status === "OK")
                     this.block.json.tx_hashes = txs.txs
-                console.log(JSON.stringify(txs))
+                //console.log(JSON.stringify(txs))
             }
             else
                 this.block.json.tx_hashes = []
+            console.log(this.block)
             /*
             this.block.json.tx_hashes = await explorer.loadTxs(this.block.json.tx_hashes)
             console.log(this.block.json.tx_hashes)
             */
+        }
+    },
+    methods: {
+        getBlockType() {
+            if (!this.block) {
+                return "Invalid"
+            }
+            return (this.block.block_header.syncblock ? "Sync Block" : (this.block.block_header.orphan_status ? "Side Block" : "Normal"))
+        },
+        previous() {
+            let topoheight = this.block.block_header.topoheight
+            if (topoheight > 1)
+                --topoheight
+            return '/block/' +  topoheight
+        },
+        next() {
+           return '/block/' +  (this.block.block_header.topoheight + 1)
         }
     }
 }
@@ -135,34 +158,30 @@ export default {
     margin-top: 2%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.box {
-    padding: 0.65em;
-    width: 25%;
-    text-align: center;
+    justify-content: space-evenly;
 }
 
 .block-info {
-    margin-left: 15%;
-    margin-right: 15%;
     text-align: left;
-    background-color: #424242;
-    color: white;
-    width: 28%;
-    padding-top: 0.5%;
+    padding: 1%;
+    width: 25%;
     
+}
+
+.title {
+    text-align: left;
+    margin-left: 15%;
 }
 
 li {
     border-bottom: 1px solid hsla(0,0%,100%,.12);
+    margin-top: 7px;
 }
 
 ul {
     margin: 0;
     padding: 0;
-    list-style: none;
+    list-style: square;
 }
 
 span {
