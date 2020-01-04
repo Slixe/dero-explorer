@@ -59,7 +59,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(block, i) in blocks" :key="i">
+                    <tr v-for="(block, i) in blocks" :key="i" @click='goBlock(block)'>
                     <td>{{ block.block_header.height }}</td>
                     <td>{{ block.block_header.topoheight }}</td>
                     <td>{{ explorer.blockDate(block.block_header.timestamp) }}</td>
@@ -123,6 +123,9 @@ export default {
           this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
     },
     methods: {
+        goBlock(block) {
+            this.$router.push('/block/' + block.block_header.hash)
+        }
     }
 }
 </script>
