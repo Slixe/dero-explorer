@@ -45,10 +45,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
+                    <td>{{ block.json.Mtx.Hash }}</td>
+                    <td>{{ block.json.Mtx.Amount }}</td>
+                    <td>{{ block.json.Mtx.Fee }}</td>
+                    <td>{{ block.json.Mtx.Size }}</td>
                     </tr>
                 </tbody>
                 </template>
@@ -68,11 +68,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(tx, i) in block.json.tx_hashes" :key="i">
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
-                    <td>?</td>
+                    <tr v-for="(tx, i) in block.json.txs" :key="i">
+                    <td>{{ tx.Hash }}</td>
+                    <td>{{ tx.Amount }}</td>
+                    <td>{{ tx.Fee }}</td>
+                    <td>{{ tx.Size }}</td>
                     </tr>
                 </tbody>
                 </template>
@@ -83,6 +83,7 @@
 
 <script>
 import * as explorer from '../explorer.js';
+import * as wasm from '../wasm.js'
 
 export default {
     data() {
@@ -92,7 +93,14 @@ export default {
                     txcount: 0
                 },
                 json: {
-                    tx_hashes: []
+                    tx_hashes: [],
+                    Mtx: {
+                        Hash: "",
+                        Amount: 0,
+                        Fee: 0,
+                        Size: ""
+                    },
+                    txs: []
                 }
             },
             blockID: this.$route.params.id, /* Block ID can be block Hash or Topo Height */
@@ -104,24 +112,20 @@ export default {
         /* eslint-disable no-console */
         this.info = await explorer.getInfo()
         let block = await explorer.loadBlock(this.blockID)
+
         if (block.json)
         {
             block.json = JSON.parse(block.json)
-            this.block = block
-            if (this.block.json.tx_hashes)
+
+            if (!block.json.tx_hashes)
             {
-                let txs = await explorer.loadTxs(this.block.json.tx_hashes)
-                if (txs && txs.status === "OK")
-                    this.block.json.tx_hashes = txs.txs
-                //console.log(JSON.stringify(txs))
+                block.json.tx_hashes = []
             }
-            else
-                this.block.json.tx_hashes = []
-            console.log(this.block)
-            /*
-            this.block.json.tx_hashes = await explorer.loadTxs(this.block.json.tx_hashes)
-            console.log(this.block.json.tx_hashes)
-            */
+            await wasm.useWASM(block)
+            wasm.addMinerTxToBlock(block)
+            await wasm.loadTxs(block.json)
+            console.log(block)
+            this.block = block
         }
     },
     methods: {

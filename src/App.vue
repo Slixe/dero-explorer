@@ -44,19 +44,10 @@
             dark
             class="text-center"
           >
-            <!--<v-card-text> 
-              <v-btn
-                v-for="icon in icons"
-                :key="icon"
-                class="mx-4"
-                icon
-              >
-                <v-icon size="24px">{{ icon }}</v-icon>
-              </v-btn>
+           <!-- <v-card-text>
+              <strong>DERO:</strong> dERokevAZEZVJ2N7o39VH81BXBqX9ojtncnPTDMyiVbmYiTXQY93AUCLcor9xsWCKWhYy25ja89ikZWXWab9kXRB7LYfUmbQyS
             </v-card-text>
-
             <v-divider></v-divider>-->
-
             <v-card-text class="white--text">
               {{ new Date().getFullYear() }} — <strong>DERO Explorer</strong>
             </v-card-text>
@@ -98,15 +89,18 @@ export default {
             if (block && (block.block_header.hash === this.search || block.block_header.topoheight === parseInt(this.search))) {
                 this.$router.push('/block/' + this.search)
             }
-            else {
+            else if (this.search.length == 64) {
               let tx = explorer.loadTxs(this.search)
               // TODO, fix loadTxs first.
               if (tx && tx.status != "TX NOT FOUND") {
                 this.$router.push('/tx/' + this.search)
               }
               else {
-                alert("Incorrect format, please specify a block height, or a block hash, or a transaction hash.")
+                alert("This transaction doesn't exist!")
               }
+            }
+            else {
+              alert("Incorrect format, please specify a block height, or a block hash, or a transaction hash.")
             }
         }
       }

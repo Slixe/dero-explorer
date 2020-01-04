@@ -21,28 +21,6 @@ export function getInfo()
     return postData("get_info")
 }
 
-export async function loadAndFormatTxs(txsHashes = [])
-{
-    const txs = {}
-
-    for (let i = 0; i < txsHashes.length; i++)
-    {
-        /*const result = await loadTxs(txsHashes[i])
-
-        let tx = {
-            valid_block: "", //block hash
-            reward: 0, //miner
-            hash: "", //tx hash
-            amount: "?",
-            fee: 0
-        }*/
-
-        
-    }
-
-    return txs
-}
-
 export function loadTxs(txsHashes = [])
 {
     const body = {
