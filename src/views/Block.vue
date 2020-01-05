@@ -3,7 +3,7 @@
         <div id="main">
             <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
             <div v-for="(hash, i) in block.block_header.tips" :key="i">
-                <h5 class="previous-block">Previous Block: <small @click="goBlock(hash)">{{ hash }}</small></h5>
+                <h5 class="previous-block">Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
             </div>
         </div>
         <v-divider class="div"></v-divider>
@@ -47,7 +47,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr @click="goTo('/tx/' + block.json.Mtx.Hash)">
                     <td>{{ block.json.Mtx.Hash }}</td>
                     <td>{{ block.json.Mtx.Amount }}</td>
                     <td>{{ block.json.Mtx.Size }}</td>
@@ -71,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(tx, i) in block.json.txs" :key="i">
+                    <tr v-for="(tx, i) in block.json.txs" :key="i" @click="goTo('/tx/' + tx.Hash)">
                     <td><font :color="tx.Skipped ? 'indianred' : ''">{{ tx.Hash }}</font></td>
                     <td>{{ tx.Amount }}</td>
                     <td>{{ tx.Fee }}</td>
@@ -147,10 +147,10 @@ export default {
         next() {
            return '/block/' +  (this.block.block_header.topoheight + 1)
         },
-        goBlock(hash)
+        goTo(path)
         {
             //this.$router.push("/block/" + hash)
-            window.location = "/block/" + hash
+            window.location = path
         }
     }
 }

@@ -8,7 +8,7 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/', component: Index },
-    { path: '/block/:id', component: Block},
+    { path: '/block/:id', component: Block },
     { path: '/tx/:hash', component: Tx }
   ];
 

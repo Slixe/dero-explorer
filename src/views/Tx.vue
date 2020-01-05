@@ -2,9 +2,98 @@
     <div id="tx">
         <div id="main">
             <h2 class="title">Tx Hash: <small class="bh">{{tx.Hash}}</small></h2>
-            <h5 class="prefix-tx">Tx Prefix Hash: <small>{{tx.PrefixHash}}</small></h5>
-            <h5 class="prefix-tx">Block (valid): <small>{{tx.ValidBlock}}</small></h5>
-            <h5 class="prefix-tx">Tx Public Key: <small>{{tx.TXpublickey}}</small></h5>
+            <h5 class="sub-title">Prefix Hash: <small>{{tx.PrefixHash}}</small></h5>
+            <!--<h5 class="sub-title">Block (valid): <small>{{tx.ValidBlock}}</small></h5>-->
+            <h5 class="sub-title">Public Key: <small>{{tx.TXpublickey}}</small></h5>
+        </div>
+        <v-divider class="div"></v-divider>
+        <div id="card">
+            <v-card dark class="tx-info">
+            <ul>
+                <li>Timestamp: <span></span></li>
+                <li>Block Topo Height: <span></span></li>
+                <li>Tx Version: <span>{{ tx.Version }}</span></li>
+                <li>Signature Type: <span>{{ tx.Type }}</span></li>
+            </ul>
+            </v-card>
+            <v-card dark class="tx-info">
+            <ul>
+                <li>Fee: <span>{{ parseFloat(tx.Fee).toFixed(5) }} DERO</span></li>
+                <li>No of Confirmations: <span>{{ tx.Depth }}</span></li>
+                <li>Tx Size: <span>{{ tx.Size }} kB</span></li>
+                <li>Ring Size: <span>{{ tx.Ring_size }}</span></li>
+            </ul>
+            </v-card>
+        </div>
+        <v-divider class="div"></v-divider>
+        <div>
+            <h1>Block</h1>
+            <v-simple-table dark id="table">
+                <template v-slot:default>
+                <thead>
+                    <tr>
+                    <th class="text-center">Block Hash</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr @click="goTo('/block/' + tx.ValidBlock)">
+                    <td>{{ tx.ValidBlock }} <font color="green">(Valid)</font></td>
+                    </tr>
+                    <tr v-for="(block, i) in tx.InvalidBlock" :key="i" @click="goTo('/block/' + block)">
+                    <td>{{ block }} <font color="indianred">(Invalid)</font></td>
+                    </tr>
+                </tbody>
+                </template>
+            </v-simple-table>
+        </div>
+        <v-divider class="div"></v-divider>
+        <div>
+            <h1>Outputs</h1>
+            <v-simple-table dark id="table">
+                <template v-slot:default>
+                <thead>
+                    <tr>
+                    <th class="text-center">Stealth Address</th>
+                    <th class="text-center">Amount</th>
+                    <th class="text-center">Amount idx</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(oa, i) in tx.OutAddress" :key="i">
+                    <td>{{ oa }}</td>
+                    <td>{{ tx.Amount }}</td>
+                    <td>{{ tx.OutOffset[i] }}</td>
+                    </tr>
+                </tbody>
+                </template>   
+            </v-simple-table>
+        </div>
+        <v-divider class="div"></v-divider>
+        <div v-show="tx.Keyimages != null">
+            <h1>Inputs</h1>
+            <div v-for="(ki, i) in tx.Keyimages" :key="i">
+                <h5>{{ i }}: key image {{ ki }}</h5>
+                <v-simple-table dark id="table">
+                <template v-slot:default>
+                <thead>
+                    <tr>
+                    <th class="text-center">Ring Member</th>
+                    <th class="text-center">Global Index</th>
+                    <th class="text-center">Height</th>
+                    <th class="text-center">Topo Height</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(ring, i) in tx.Ring[i]" :key="i">
+                    <td>{{ ring.inkey.Destination }}<br/>{{ ring.inkey.Mask }}</td>
+                    <td>{{ ring.indexglobal }}</td>
+                    <td>{{ ring.height }}</td>
+                    <td>{{ ring.Topoheight }}</td>
+                    </tr>
+                </tbody>
+                </template>
+            </v-simple-table>
+            </div>
         </div>
     </div>
 </template>
@@ -17,7 +106,6 @@ export default {
         return {
             txHash: this.$route.params.hash,
             tx: {
-
             },
             validHash: false,
             explorer
@@ -33,10 +121,27 @@ export default {
             console.log(result)
             this.tx = result[0]
         }
+    },
+    methods: {
+        goTo(path)
+        {
+            window.location = path
+        }
     }
 }
 </script>
 <style scoped>
+#main {
+    margin-top: 1%;
+}
+
+#table {
+    margin-top: 2%;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 3%;
+}
+
 .title {
     text-align: left;
     margin-left: 15%;
@@ -44,6 +149,11 @@ export default {
 
 .bh {
     font-size: 1rem;
+}
+
+.div {
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 #main {
@@ -61,5 +171,26 @@ ul {
 
 span {
     color: hsla(0,0%,100%,.7);
+}
+
+.sub-title {
+    text-align: left;
+    margin-left: 15%;
+}
+
+.tx-info {
+    width: 25%;
+    text-align: left;
+    padding: 1%;
+}
+
+#card {
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 2%;
+    margin-top: 2%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 </style>
