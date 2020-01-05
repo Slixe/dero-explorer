@@ -2,6 +2,9 @@
     <div id="block">
         <div id="main">
             <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
+            <div v-for="(hash, i) in block.block_header.tips" :key="i">
+                <h5 class="previous-block">Previous Block: <small @click="goBlock(hash)">{{ hash }}</small></h5>
+            </div>
         </div>
         <v-divider class="div"></v-divider>
         <div id="boxes">
@@ -39,16 +42,16 @@
                     <tr>
                     <th class="text-center">Tx Hash</th>
                     <th class="text-center">Outputs</th>
-                    <th class="text-center">Fees</th>
                     <th class="text-center">Size (kB)</th>
+                    <th class="text-center">Version</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                     <td>{{ block.json.Mtx.Hash }}</td>
                     <td>{{ block.json.Mtx.Amount }}</td>
-                    <td>{{ block.json.Mtx.Fee }}</td>
                     <td>{{ block.json.Mtx.Size }}</td>
+                    <td>{{ block.json.Mtx.Version }}</td>
                     </tr>
                 </tbody>
                 </template>
@@ -69,7 +72,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(tx, i) in block.json.txs" :key="i">
-                    <td>{{ tx.Hash }}</td>
+                    <td><font :color="tx.Skipped ? 'color' : ''">{{ tx.Hash }}</font></td>
                     <td>{{ tx.Amount }}</td>
                     <td>{{ tx.Fee }}</td>
                     <td>{{ tx.Size }}</td>
@@ -90,14 +93,14 @@ export default {
         return {
             block: {
                 block_header: {
-                    txcount: 0
+                    txcount: 0,
+                    tips: []
                 },
                 json: {
                     tx_hashes: [],
                     Mtx: {
                         Hash: "",
                         Amount: 0,
-                        Fee: 0,
                         Size: ""
                     },
                     txs: []
@@ -121,7 +124,7 @@ export default {
             {
                 block.json.tx_hashes = []
             }
-            await wasm.useWASM(block)
+            await wasm.useWASM()
             wasm.addMinerTxToBlock(block)
             await wasm.loadTxs(block.json)
             console.log(block)
@@ -143,6 +146,11 @@ export default {
         },
         next() {
            return '/block/' +  (this.block.block_header.topoheight + 1)
+        },
+        goBlock(hash)
+        {
+            //this.$router.push("/block/" + hash)
+            window.location = "/block/" + hash
         }
     }
 }
@@ -206,5 +214,10 @@ span {
 .div {
     margin-top: 1%;
     margin-bottom: 1%;
+}
+
+.previous-block {
+    margin-left: 15%;
+    text-align: left;
 }
 </style>

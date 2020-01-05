@@ -30,3 +30,10 @@ export async function loadTxs(blockJson)
     blockJson.Mtx = blockJson.txs[0]
     blockJson.txs.shift(0)
 }
+
+export async function parseTx(txHash)
+{
+    let result = await explorer.loadTxs([txHash])
+    result = JSON.parse(deserializeTx(JSON.stringify(result)))
+    return result
+}

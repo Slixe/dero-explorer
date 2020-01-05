@@ -25,8 +25,7 @@ export function loadTxs(txsHashes = [])
 {
     const body = {
         txs_hashes: txsHashes
-      }
-      console.log(body)
+    }
     return fetch(daemon + "/gettransactions", {
         method: "POST",
         body: JSON.stringify(body)
