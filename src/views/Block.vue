@@ -72,7 +72,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(tx, i) in block.json.txs" :key="i">
-                    <td><font :color="tx.Skipped ? 'color' : ''">{{ tx.Hash }}</font></td>
+                    <td><font :color="tx.Skipped ? 'indianred' : ''">{{ tx.Hash }}</font></td>
                     <td>{{ tx.Amount }}</td>
                     <td>{{ tx.Fee }}</td>
                     <td>{{ tx.Size }}</td>
