@@ -121,6 +121,30 @@ export default {
 
           this.info = await explorer.getInfo()
           this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
+/* eslint-disable no-console */
+          setInterval(() => {
+              console.log("updating...")
+              explorer.getInfo().then(info => {
+
+                  if (this.info.topoheight !== info.topoheight)
+                  {
+                    explorer.loadBlocks(info.topoheight, info.topoheight - this.info.topoheight).then(result => {
+                        for (let i = result.length; i > 0; i--)
+                        {
+                            if (this.blocks[0].block_header.topoheight < result[i - 1].block_header.topoheight)
+                                this.blocks.unshift(result[i - 1])
+                        }
+                    })
+                  }
+
+                  this.info = info
+              })
+
+              explorer.getTxsPool().then(result => {
+                if (result.txs)
+                    this.txs = result.txs
+              })
+          }, 1000 * 8) //every 8s 
     },
     methods: {
         goBlock(block) {

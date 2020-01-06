@@ -18,7 +18,7 @@
             </v-card>
             <v-card dark class="tx-info">
             <ul>
-                <li>Fee: <span>{{ parseFloat(tx.Fee).toFixed(5) }} DERO</span></li>
+                <li>Fee: <span>{{ parseFloat(tx.Feeuint64 / 1000000000000).toFixed(5) }} DERO</span></li>
                 <li>No of Confirmations: <span>{{ tx.Depth }}</span></li>
                 <li>Tx Size: <span>{{ tx.Size }} kB</span></li>
                 <li>Ring Size: <span>{{ tx.Ring_size }}</span></li>

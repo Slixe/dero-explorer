@@ -60,7 +60,6 @@ export async function loadFullBlock(blockID)
 
         let txs = await explorer.loadTxs(block.json.tx_hashes)
         result = await JSON.parse(loadBlock(JSON.stringify(block), JSON.stringify(txs)))
-        console.log(result)
     }
 
     return result
