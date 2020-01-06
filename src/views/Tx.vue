@@ -10,8 +10,8 @@
         <div id="card">
             <v-card dark class="tx-info">
             <ul>
-                <li>Timestamp: <span></span></li>
-                <li>Block Topo Height: <span></span></li>
+                <li>Timestamp: <span>{{new Date(tx.Timestamp * 1000).toLocaleString()}}</span></li>
+                <li>Block Topo Height: <span>{{ tx.Height }}</span></li>
                 <li>Tx Version: <span>{{ tx.Version }}</span></li>
                 <li>Signature Type: <span>{{ tx.Type }}</span></li>
             </ul>
@@ -148,7 +148,7 @@ export default {
 }
 
 .bh {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 .div {
@@ -179,7 +179,7 @@ span {
 }
 
 .tx-info {
-    width: 25%;
+    width: 28%;
     text-align: left;
     padding: 1%;
 }

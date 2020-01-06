@@ -1,8 +1,8 @@
 <template>
     <div id="block">
         <div id="main">
-            <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.block_header.topoheight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.block_header.hash}}</small></h2>
-            <div v-for="(hash, i) in block.block_header.tips" :key="i">
+            <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.TopoHeight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.Hash}}</small></h2>
+            <div v-for="(hash, i) in block.Tips" :key="i">
                 <h5 class="previous-block">Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
             </div>
         </div>
@@ -10,26 +10,26 @@
         <div id="boxes">
             <v-card dark class="block-info">
             <ul>
-                <li>Topo Height (unique): <span>{{explorer.formatSupply(block.block_header.topoheight)}}</span></li>
-                <li>Block Height: <span>{{explorer.formatSupply(block.block_header.height)}}</span></li>
-                <li>Depth: <span>{{explorer.formatSupply(block.block_header.depth)}}</span></li>
-                <li>Timestamp: <span>{{new Date(block.block_header.timestamp * 1000).toLocaleString()}}</span></li>
+                <li>Topo Height (unique): <span>{{explorer.formatSupply(block.TopoHeight)}}</span></li>
+                <li>Block Height: <span>{{explorer.formatSupply(block.Height)}}</span></li>
+                <li>Depth: <span>{{explorer.formatSupply(block.Depth)}}</span></li>
+                <li>Timestamp: <span>{{new Date(block.Timestamp * 1000).toLocaleString()}}</span></li>
             </ul>
             </v-card>
             <v-card dark class="block-info">
             <ul>
-                <li>Hashrate: <span>{{ explorer.formatSupply((block.block_header.difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</span></li>
-                <li>Difficulty: <span>{{explorer.formatSupply(block.block_header.difficulty)}}</span></li>
-                <li>Reward: <span>{{(block.block_header.reward / 1000000000000).toFixed(4)}} <strong>DERO</strong></span></li>
-                <li>Nonce: <span>{{explorer.formatSupply(block.block_header.nonce)}}</span></li>
+                <li>Hashrate: <span>{{ explorer.formatSupply((block.Difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</span></li>
+                <li>Difficulty: <span>{{explorer.formatSupply(block.Difficulty)}}</span></li>
+                <li>Reward: <span>{{ block.Reward }} <strong>DERO</strong></span></li>
+                <li>Nonce: <span>{{explorer.formatSupply(block.Nonce)}}</span></li>
             </ul>
             </v-card>
             <v-card dark class="block-info">
             <ul>
-                <li>Major Version: <span>{{ block.block_header.major_version }}</span></li>
-                <li>Minor Version: <span>{{ block.block_header.minor_version }}</span></li>
+                <li>Minor / Major Version: <span>{{ block.Minor_Version }} / {{ block.Major_Version }}</span></li>
+                <li>Block Size: <span>{{ block.Size }} kB</span></li>
                 <li>Block Type: <span>{{ getBlockType() }}</span></li>
-                <li>Transactions: <span>{{ block.block_header.txcount }}</span></li>
+                <li>Transactions: <span>{{ block.Tx_Count }}</span></li>
             </ul>
             </v-card>
         </div>
@@ -47,11 +47,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr @click="goTo('/tx/' + block.json.Mtx.Hash)">
-                    <td>{{ block.json.Mtx.Hash }}</td>
-                    <td>{{ block.json.Mtx.Amount }}</td>
-                    <td>{{ block.json.Mtx.Size }}</td>
-                    <td>{{ block.json.Mtx.Version }}</td>
+                    <tr @click="goTo('/tx/' + block.Mtx.Hash)">
+                    <td>{{ block.Mtx.Hash }}</td>
+                    <td>{{ block.Mtx.Amount }}</td>
+                    <td>{{ block.Mtx.Size }}</td>
+                    <td>{{ block.Mtx.Version }}</td>
                     </tr>
                 </tbody>
                 </template>
@@ -59,7 +59,7 @@
         </div>
           <v-divider class="div"></v-divider>
         <div>
-            <h1>{{ block.block_header.txcount }} Transactions</h1>
+            <h1>{{ block.Tx_Count }} Transactions</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>
@@ -71,10 +71,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(tx, i) in block.json.txs" :key="i" @click="goTo('/tx/' + tx.Hash)">
+                    <tr v-for="(tx, i) in block.Txs" :key="i" @click="goTo('/tx/' + tx.Hash)">
                     <td><font :color="tx.Skipped ? 'indianred' : ''">{{ tx.Hash }}</font></td>
                     <td>{{ tx.Amount }}</td>
-                    <td>{{ tx.Fee }}</td>
+                    <td>{{ parseFloat(tx.Fee).toFixed(5) }}</td>
                     <td>{{ tx.Size }}</td>
                     </tr>
                 </tbody>
@@ -92,19 +92,14 @@ export default {
     data() {
         return {
             block: {
-                block_header: {
-                    txcount: 0,
-                    tips: []
+                Tx_Count: 0,
+                tips: [],
+                Mtx: {
+                    Hash: "",
+                    Amount: 0,
+                    Size: ""
                 },
-                json: {
-                    tx_hashes: [],
-                    Mtx: {
-                        Hash: "",
-                        Amount: 0,
-                        Size: ""
-                    },
-                    txs: []
-                }
+                Txs: []
             },
             blockID: this.$route.params.id, /* Block ID can be block Hash or Topo Height */
             explorer,
@@ -112,40 +107,25 @@ export default {
         }
     },
     async mounted() {
-        /* eslint-disable no-console */
         this.info = await explorer.getInfo()
-        let block = await explorer.loadBlock(this.blockID)
-
-        if (block.json)
-        {
-            block.json = JSON.parse(block.json)
-
-            if (!block.json.tx_hashes)
-            {
-                block.json.tx_hashes = []
-            }
-            await wasm.useWASM()
-            wasm.addMinerTxToBlock(block)
-            await wasm.loadTxs(block.json)
-            console.log(block)
-            this.block = block
-        }
+        await wasm.useWASM()
+        this.block = await wasm.loadFullBlock(this.blockID)
     },
     methods: {
         getBlockType() {
             if (!this.block) {
                 return "Invalid"
             }
-            return (this.block.block_header.syncblock ? "Sync Block" : (this.block.block_header.orphan_status ? "Side Block" : "Normal"))
+            return (this.block.SyncBlock ? "Sync Block" : (this.block.Orphans_Status ? "Side Block" : "Normal"))
         },
         previous() {
-            let topoheight = this.block.block_header.topoheight
+            let topoheight = this.block.TopoHeight
             if (topoheight > 1)
                 --topoheight
             return '/block/' +  topoheight
         },
         next() {
-           return '/block/' +  (this.block.block_header.topoheight + 1)
+           return '/block/' +  (this.block.TopoHeight + 1)
         },
         goTo(path)
         {

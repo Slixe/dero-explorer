@@ -35,5 +35,33 @@ export async function parseTx(txHash)
 {
     let result = await explorer.loadTxs([txHash])
     result = JSON.parse(deserializeTx(JSON.stringify(result)))
+    let block = await explorer.loadBlock(result[0].ValidBlock)
+
+    result[0].Depth = block.block_header.depth
+    result[0].Timestamp = block.block_header.timestamp
+
+    return result
+}
+
+export async function loadFullBlock(blockID)
+{
+    let result = {}
+    let block = await explorer.loadBlock(blockID)
+    if (block.json)
+    {
+        block.json = JSON.parse(block.json)
+
+        if (!block.json.tx_hashes)
+        {
+            block.json.tx_hashes = []
+        }
+
+        addMinerTxToBlock(block)
+
+        let txs = await explorer.loadTxs(block.json.tx_hashes)
+        result = await JSON.parse(loadBlock(JSON.stringify(block), JSON.stringify(txs)))
+        console.log(result)
+    }
+
     return result
 }
