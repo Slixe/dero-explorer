@@ -27,6 +27,12 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
+            <h4 v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
+            <h4 v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
+            <h4>Extra: <small class="bh">{{ tx.Extra }}</small></h4>
+        </div>
+        <v-divider class="div"></v-divider>
+        <div>
             <h1>Block</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
