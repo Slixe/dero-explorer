@@ -2,12 +2,12 @@
   <div id="app">
     <v-app>
       <header>
-          <v-toolbar dark>
+          <v-toolbar id="navbar" dark>
             <v-spacer></v-spacer>
-            <v-toolbar-side-icon>
-              <v-img src="/logo.png" height="60px" width="60px"> 
+            <v-avatar size="60" tile>
+              <v-img src="/logo.png"> 
               </v-img>
-            </v-toolbar-side-icon>
+            </v-avatar>
             <v-btn to="/" text>
               <v-toolbar-title>DERO Explorer</v-toolbar-title>
             </v-btn>
@@ -79,6 +79,11 @@ export default {
           href: "https://network.dero.io"
         }
       ],
+      menu: [
+        { icon: 'home', title: 'Link A' },
+        { icon: 'info', title: 'Link B' },
+        { icon: 'warning', title: 'Link C' }
+      ],
       search: ""
     }
   },
@@ -128,4 +133,11 @@ export default {
 .fade-leave-active {
   opacity: 0;
 }
+
+/*@media screen and (max-width: 960px)
+{
+  #navbar {
+    display: none;
+  }
+}*/
 </style>

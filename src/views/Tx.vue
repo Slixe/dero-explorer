@@ -27,9 +27,9 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h4 v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
-            <h4 v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
-            <h4>Extra: <small class="bh">{{ tx.Extra }}</small></h4>
+            <h4 class="sub-title" v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
+            <h4 class="sub-title" v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
+            <h4 class="sub-title">Extra: <small class="bh">{{ tx.Extra }}</small></h4>
         </div>
         <v-divider class="div"></v-divider>
         <div>
@@ -137,6 +137,10 @@ export default {
 }
 </script>
 <style scoped>
+h1, h2, h3, h4, h5 {
+    word-break: break-all;
+}
+
 #main {
     margin-top: 1%;
 }
@@ -193,10 +197,50 @@ span {
 #card {
     margin-left: 15%;
     margin-right: 15%;
-    margin-bottom: 2%;
-    margin-top: 2%;
+    margin-bottom: 3%;
+    margin-top: 3%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+}
+
+@media screen and (max-width: 1280px)
+{
+    #card {
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    .tx-info {
+        width: 300px;
+        margin-top: 3%;
+        margin-bottom: 3%;
+        width: 96%;
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+
+    .title, .sub-title, .bh {
+        margin-left: 2%;
+        margin-right: 2%;
+        font-size: 0.7rem;
+        text-align: center;
+    }
+
+    .title {
+        font-size: 0.9rem;
+    }
+
+    .bh {
+        font-size: 0.59rem;
+    }
+
+    #table {
+        margin-top: 2%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5%;
+    }
 }
 </style>

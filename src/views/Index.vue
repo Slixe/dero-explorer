@@ -200,4 +200,26 @@ li {
 .lb {
     margin-top: 1%;
 }
+
+@media screen and (max-width: 1280px)
+{
+    #boxes {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .box {
+        margin-bottom: 2%;
+        width: 96%;
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+
+    #table {
+        margin-top: 2%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5%;
+    }
+}
 </style>

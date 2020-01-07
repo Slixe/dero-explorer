@@ -137,6 +137,7 @@ export default {
 </script>
 
 <style scoped>
+
 #table {
     margin-top: 2%;
     margin-left: 15%;
@@ -157,8 +158,7 @@ export default {
 .block-info {
     text-align: left;
     padding: 1%;
-    width: 25%;
-    
+    width: 320px;
 }
 
 .title {
@@ -199,5 +199,58 @@ span {
 .previous-block {
     margin-left: 15%;
     text-align: left;
+}
+
+@media screen and (max-width: 1395px)
+{
+    #boxes {
+        margin: auto;
+    }
+
+    #table {
+        margin-top: 2%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5%;
+    }
+}
+
+@media screen and (max-width: 1280px)
+{
+    #boxes {
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+    }
+
+    .block-info {
+        width: 96%;
+        margin-left: 2%;
+        margin-right: 2%;
+        margin-top: 3%;
+        margin-bottom: 3%;
+    }
+
+    .previous-block, .title, .bh {
+        margin-left: 2%;
+        margin-right: 2%;
+        font-size: 0.7rem;
+        text-align: center;
+    }
+
+    .title {
+        font-size: 0.9rem;
+    }
+
+    .bh {
+        font-size: 0.59rem;
+    }
+
+    #table {
+        margin-top: 2%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-bottom: 5%;
+    }
 }
 </style>
