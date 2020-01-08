@@ -224,9 +224,9 @@ span {
     }
 
     .block-info {
-        width: 96%;
-        margin-left: 2%;
-        margin-right: 2%;
+        /*width: 96%;*/
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 3%;
         margin-bottom: 3%;
     }

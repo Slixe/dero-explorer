@@ -21,7 +21,7 @@
                 <v-card-title>MEM POOL<h5 class="subtitle">({{ txs.length }} transactions)</h5></v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
-                    <ul class="net-info" v-for="(tx, i) in txs" :key="i">
+                    <ul class="net-info mempool" v-for="(tx, i) in txs" :key="i">
                         <li>{{ tx }}</li>
                     </ul>
                 </v-card-text>
@@ -183,8 +183,13 @@ export default {
     width: 22em;
 }
 
-li {
+ul li {
     list-style: none;
+    padding: 0;
+}
+
+.mempool {
+    text-align: center;
 }
 
 .subtitle {
@@ -205,14 +210,14 @@ li {
 {
     #boxes {
         flex-direction: column;
-        align-items: center;
+        align-items: left;
     }
 
     .box {
         margin-bottom: 2%;
-        width: 96%;
-        margin-left: 2%;
-        margin-right: 2%;
+        /*width: 96%;*/
+        margin-left: auto;
+        margin-right: auto;
     }
 
     #table {

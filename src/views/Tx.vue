@@ -1,6 +1,6 @@
 <template>
     <div id="tx">
-        <div id="main">
+        <div id="main" class="extra">
             <h2 class="title">Tx Hash: <small class="bh">{{tx.Hash}}</small></h2>
             <h5 class="sub-title">Prefix Hash: <small>{{tx.PrefixHash}}</small></h5>
             <!--<h5 class="sub-title">Block (valid): <small>{{tx.ValidBlock}}</small></h5>-->
@@ -11,7 +11,7 @@
             <v-card dark class="tx-info">
             <ul>
                 <li>Timestamp: <span>{{new Date(tx.Timestamp * 1000).toLocaleString()}}</span></li>
-                <li>Block Topo Height: <span>{{ tx.Height }}</span></li>
+                <li>Block Topo Height: <span>{{ explorer.formatSupply(tx.Height) }}</span></li>
                 <li>Tx Version: <span>{{ tx.Version }}</span></li>
                 <li>Signature Type: <span>{{ tx.Type }}</span></li>
             </ul>
@@ -26,10 +26,10 @@
             </v-card>
         </div>
         <v-divider class="div"></v-divider>
-        <div>
-            <h4 class="sub-title" v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
-            <h4 class="sub-title" v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
-            <h4 class="sub-title">Extra: <small class="bh">{{ tx.Extra }}</small></h4>
+        <div class="extra">
+            <h4 v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
+            <h4 v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
+            <h4>Extra: <small class="bh">{{ tx.Extra }}</small></h4>
         </div>
         <v-divider class="div"></v-divider>
         <div>
@@ -54,7 +54,7 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h1>Outputs</h1>
+            <h1>Outputs ({{ tx.OutAddress.length }})</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>
@@ -74,11 +74,11 @@
                 </template>   
             </v-simple-table>
         </div>
-        <v-divider class="div"></v-divider>
-        <div v-show="tx.Keyimages != null">
-            <h1>Inputs</h1>
+        <v-divider v-show="tx.Keyimages.length > 0" class="div"></v-divider>
+        <div v-show="tx.Keyimages.length > 0">
+            <h1>Inputs ({{ tx.Keyimages.length }})</h1>
             <div v-for="(ki, i) in tx.Keyimages" :key="i">
-                <h5>{{ i }}: key image {{ ki }}</h5>
+                <h5 class="ki">{{ i }}: Key Image {{ ki }}</h5>
                 <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>
@@ -112,6 +112,8 @@ export default {
         return {
             txHash: this.$route.params.hash,
             tx: {
+                OutAddress: [],
+                Keyimages: []
             },
             validHash: false,
             explorer
@@ -126,6 +128,11 @@ export default {
             /* eslint-disable no-console */
             console.log(result)
             this.tx = result[0]
+
+            if (!this.tx.Keyimages)
+            {
+                this.tx.Keyimages = []
+            }
         }
     },
     methods: {
@@ -179,6 +186,10 @@ ul {
     list-style: square;
 }
 
+.ki {
+    margin-top: 2%;
+}
+
 span {
     color: hsla(0,0%,100%,.7);
 }
@@ -192,6 +203,11 @@ span {
     width: 28%;
     text-align: left;
     padding: 1%;
+}
+
+.extra {
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 #card {
@@ -210,6 +226,12 @@ span {
         flex-direction: column;
         align-items: center;
         margin: auto;
+    }
+
+    .ki {
+        font-size: 0.7em;
+        margin-left: 5%;
+        margin-right: 5%;
     }
 
     .tx-info {
