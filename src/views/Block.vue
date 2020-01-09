@@ -177,6 +177,7 @@ ul {
 
 a:link, a:visited, a:active {
     color: white;
+    text-decoration: none;
 }
 
 span {

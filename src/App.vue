@@ -25,6 +25,7 @@
               <v-btn href="https://dero.io" text>Home</v-btn>
               <v-btn href="https://wallet.dero.io" text>Web Wallet</v-btn>
               <dropdown name="Stats" :items="this.statsItems"></dropdown>
+            <v-btn @click="$vuetify.theme.dark = !$vuetify.theme.dark" dark text><span><v-icon dark>invert_colors</v-icon></span></v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -116,7 +117,7 @@ export default {
 <style>
 #app {
   text-align: center;
-  color: #2c3e50;
+  /*color: #2c3e50;*/
 }
 
 .fade-enter-active,
