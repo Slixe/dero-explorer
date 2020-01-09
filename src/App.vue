@@ -25,7 +25,7 @@
               <v-btn href="https://dero.io" text>Home</v-btn>
               <v-btn href="https://wallet.dero.io" text>Web Wallet</v-btn>
               <dropdown name="Stats" :items="this.statsItems"></dropdown>
-            <v-btn @click="$vuetify.theme.dark = !$vuetify.theme.dark" dark text><span><v-icon dark>invert_colors</v-icon></span></v-btn>
+            <v-btn @click="changeTheme()" dark text><span><v-icon dark>invert_colors</v-icon></span></v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -88,6 +88,11 @@ export default {
       search: ""
     }
   },
+  mounted() {
+    if (localStorage.theme) {
+      this.$vuetify.theme.dark = localStorage.theme == "dark"
+    }
+  },
   methods: { /* eslint-disable no-console */
     async searchFunc() {
         if (this.search) {
@@ -109,6 +114,10 @@ export default {
               alert("Incorrect format, please specify a block height, or a block hash, or a transaction hash.")
             }
         }
+      },
+      changeTheme() {
+        this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+        localStorage.theme = "dark"
       }
     }
 }
