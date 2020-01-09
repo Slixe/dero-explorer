@@ -117,7 +117,14 @@ export default {
       },
       changeTheme() {
         this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-        localStorage.theme = "dark"
+
+        if (this.$vuetify.theme.dark) {
+          localStorage.theme = "dark"
+          document.getElementById("app").style.color = "black"
+        } else {
+          localStorage.theme = "light"
+          document.getElementById("app").style.color = "#2c3e50"
+        }
       }
     }
 }
