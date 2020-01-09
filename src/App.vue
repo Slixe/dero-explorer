@@ -78,6 +78,10 @@ export default {
         {
           title: "Retro Stats",
           href: "https://network.dero.io"
+        },
+        {
+          title: "Stats",
+          to: "/stats"
         }
       ],
       menu: [
@@ -91,6 +95,8 @@ export default {
   mounted() {
     if (localStorage.theme) {
       this.$vuetify.theme.dark = localStorage.theme == "dark"
+    } else {
+      this.$vuetify.theme.dark = true
     }
   },
   methods: { /* eslint-disable no-console */

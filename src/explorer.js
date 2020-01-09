@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-var daemon = 'https://wallet.dero.io'
+const daemon = 'https://wallet.dero.io'
 
 export function blockDate(timestamp) {
     let date = new Date(timestamp * 1000);
@@ -19,6 +19,23 @@ export function formatSupply(supply) {
 export function getInfo()
 {
     return postData("get_info")
+}
+
+export async function getBlocks(pos, depth, n = 1)
+{
+    const array = []
+    for (let i = 0; i < depth; i++)
+    {
+        let block = await loadBlock(pos - ((depth - i) * n))
+        if (block) {
+            array.push({
+                height: block.block_header.topoheight,
+                difficulty: block.block_header.difficulty,
+                reward: (block.block_header.reward / 1000000000000).toFixed(4)
+            })
+        }
+    }
+    return array
 }
 
 export function loadTxs(txsHashes = [])
