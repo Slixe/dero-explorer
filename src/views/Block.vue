@@ -1,9 +1,9 @@
 <template>
     <div id="block">
         <div id="main">
-            <h2 class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.TopoHeight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.Hash}}</small></h2>
+            <h2 :class="{ 'title-color': !$vuetify.theme.dark }" class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.TopoHeight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.Hash}}</small></h2>
             <div v-for="(hash, i) in block.Tips" :key="i">
-                <h5 class="previous-block">Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
+                <h5 :class="{ 'title-color': !$vuetify.theme.dark }" class="previous-block">Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
             </div>
         </div>
         <v-divider class="div"></v-divider>
@@ -35,7 +35,7 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h1>Miner reward transaction</h1>
+            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">Miner reward transaction</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>
@@ -59,7 +59,7 @@
         </div>
           <v-divider class="div"></v-divider>
         <div>
-            <h1>{{ block.Tx_Count }} Transactions</h1>
+            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">{{ block.Tx_Count }} Transactions</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>

@@ -19,7 +19,7 @@ function createChart(title, name, categories = [], data = [])
 {
     const options = {
         chart: {
-          height: 500,
+          //height: 500,
           type: 'line',
           background: '#424242',
           toolbar: {
@@ -44,10 +44,10 @@ function createChart(title, name, categories = [], data = [])
                 shadeIntensity: 0.65
             },
         },
-        stroke: {
+        /*stroke: {
           width: 7,
           curve: 'smooth'
-        },
+        },*/
         xaxis: {
           type: 'string',
           categories: [],
@@ -55,13 +55,13 @@ function createChart(title, name, categories = [], data = [])
               show: false
           }
         },
-        title: {
+        /*title: {
           text: 'No Text',
           align: 'center',
           style: {
             fontSize: "24px"
           }
-        },
+        },*/
         fill: {
           type: 'gradient',
           gradient: {
@@ -73,7 +73,7 @@ function createChart(title, name, categories = [], data = [])
             opacityTo: 1,
             stops: [0, 100, 100, 100]
           },
-        },
+        }/*,
         markers: {
           size: 4,
           opacity: 0.9,
@@ -83,10 +83,11 @@ function createChart(title, name, categories = [], data = [])
           hover: {
             size: 7,
           }
-        }
+        }*/
     }
 
-    options.title.text = title
+    //options.title.text = title
+    title = ""
     options.xaxis.categories = categories
 
     return {

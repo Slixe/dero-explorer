@@ -12,7 +12,7 @@
                         <li><strong>Average Block Time:</strong> {{ info.averageblocktime50 }}s</li>
                         <li><strong>Difficulty:</strong> {{ explorer.formatSupply(info.difficulty) }} </li>
                         <li><strong>Median Block Size:</strong> {{ explorer.formatSupply(info.median_block_size/1000) }} kB</li>
-                        <li><strong>Total Supply:</strong> {{ explorer.formatSupply(info.total_supply) }} DERO</li>
+                        <li><strong>Current Supply:</strong> {{ explorer.formatSupply(info.total_supply) }} DERO</li>
                     </ul>
                 </v-card-text>
             </v-card>
@@ -26,8 +26,14 @@
                     </ul>
                 </v-card-text>
             </v-card>
-
             <v-card dark class="box" elevation="10">
+                <v-card-title>HASHRATE CHART</v-card-title>
+                <v-divider></v-divider>
+                <div v-if="ready">
+                    <apexchart type="line" :options="networkChart.options" :series="networkChart.datas"></apexchart>
+                </div>
+            </v-card>
+            <!--<v-card dark class="box" elevation="10">
                 <v-card-title>PRICE INFORMATION</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
@@ -40,11 +46,11 @@
                         <li><strong>24h Volume:</strong> {{ explorer.formatSupply(coinGecko.volume24hUSD) }} USD / {{ explorer.formatSupply(coinGecko.volume24hBTC) }} BTC</li>
                     </ul>
                 </v-card-text>
-            </v-card>
+            </v-card>-->
         </div>
         <v-divider></v-divider>
         <div class="lb"> <!-- Latest blocks -->
-            <h1>LATEST BLOCKS</h1>
+            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">LATEST BLOCKS</h1>
             <v-simple-table dark id="table">
                 <template v-slot:default>
                 <thead>
@@ -77,14 +83,19 @@
 
 <script>
 import * as explorer from '../explorer.js';
+import VueApexCharts from 'vue-apexcharts'
+import * as chart from '../charts'
 
 export default {
+    components: {
+        apexchart: VueApexCharts,
+    },
     data() {
         return { 
             txs: [],
             info: {},
             blocks: [],
-            coinGecko: {
+            /*coinGecko: {
                 priceUSD: 0,
                 priceBTC: 0,
                 volume24hUSD: 0,
@@ -95,12 +106,14 @@ export default {
                 ATLpriceBTC: 0,
                 marketcap: 0,
                 market_cap_rank: 0,
-            },
-            explorer
+            },*/
+            explorer,
+            networkChart: {},
+            ready: false
         }
     },
     async mounted() {                  
-          fetch("https://api.coingecko.com/api/v3/coins/dero?localization=en&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false")
+          /*fetch("https://api.coingecko.com/api/v3/coins/dero?localization=en&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false")
             .then(result => result.json()).then(result => {
                 this.coinGecko.priceUSD = result.market_data.current_price.usd
                 this.coinGecko.priceBTC = result.market_data.current_price.btc
@@ -112,7 +125,7 @@ export default {
                 this.coinGecko.ATLpriceBTC = result.market_data.atl.btc
                 this.coinGecko.marketcap = result.market_data.market_cap.usd
                 this.coinGecko.market_cap_rank = result.market_data.market_cap_rank
-            })
+            })*/
 
           let pool = await explorer.getTxsPool()
 
@@ -121,6 +134,10 @@ export default {
 
           this.info = await explorer.getInfo()
           this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
+
+        await chart.init()
+        this.networkChart = chart.hashrateChart()
+        this.ready = true
 
           setInterval(() => {
               explorer.getInfo().then(info => {
@@ -186,6 +203,7 @@ export default {
 ul li {
     list-style: none;
     padding: 0;
+    margin-bottom: 2%;
 }
 
 .mempool {
@@ -212,7 +230,6 @@ ul li {
 {
     #boxes {
         flex-direction: column;
-        align-items: left;
     }
 
     .box {

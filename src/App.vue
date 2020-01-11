@@ -2,7 +2,7 @@
   <div id="app">
     <v-app>
       <header>
-          <v-toolbar id="navbar" dark>
+          <v-toolbar dark>
             <v-spacer></v-spacer>
             <v-avatar size="60" tile>
               <v-img src="/logo.png"> 
@@ -21,7 +21,7 @@
             ></v-text-field>
             <v-btn @click="searchFunc()" text>Search</v-btn>
             <v-spacer></v-spacer>
-            <v-toolbar-items class="hidden-sm-and-down">
+            <v-toolbar-items>
               <v-btn href="https://dero.io" text>Home</v-btn>
               <v-btn href="https://wallet.dero.io" text>Web Wallet</v-btn>
               <dropdown name="Stats" :items="this.statsItems"></dropdown>
@@ -36,8 +36,7 @@
               <router-view></router-view>
             </transition>
         </v-content>
-
-        <v-footer padless>
+        <v-footer elevation="10" padless>
           <v-card
             flat
             tile
@@ -45,10 +44,10 @@
             dark
             class="text-center"
           >
-           <!-- <v-card-text>
-              <strong>DERO:</strong> dERokevAZEZVJ2N7o39VH81BXBqX9ojtncnPTDMyiVbmYiTXQY93AUCLcor9xsWCKWhYy25ja89ikZWXWab9kXRB7LYfUmbQyS
+            <v-card-text>
+              dERokevAZEZVJ2N7o39VH81BXBqX9ojtncnPTDMyiVbmYiTXQY93AUCLcor9xsWCKWhYy25ja89ikZWXWab9kXRB7LYfUmbQyS
             </v-card-text>
-            <v-divider></v-divider>-->
+            <v-divider></v-divider>
             <v-card-text class="white--text">
               {{ new Date().getFullYear() }} — <strong>DERO Explorer</strong>
             </v-card-text>
@@ -78,18 +77,19 @@ export default {
         {
           title: "Retro Stats",
           href: "https://network.dero.io"
-        },
+        }/*,
         {
           title: "Stats",
           to: "/stats"
-        }
+        }*/
       ],
       menu: [
         { icon: 'home', title: 'Link A' },
         { icon: 'info', title: 'Link B' },
         { icon: 'warning', title: 'Link C' }
       ],
-      search: ""
+      search: "",
+      menuMobile: false
     }
   },
   mounted() {
@@ -139,7 +139,15 @@ export default {
 <style>
 #app {
   text-align: center;
-  /*color: #2c3e50;*/
+  color: white;
+}
+
+* {
+    transition: background-color 200ms ease, color 150ms ease-in-out;
+}
+
+.title-color {
+    color: #2c3e50;
 }
 
 .fade-enter-active,
@@ -157,10 +165,8 @@ export default {
   opacity: 0;
 }
 
-/*@media screen and (max-width: 960px)
+@media screen and (max-width: 960px)
 {
-  #navbar {
-    display: none;
-  }
-}*/
+
+}
 </style>
