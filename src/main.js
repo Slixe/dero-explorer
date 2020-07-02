@@ -15,6 +15,24 @@ new Vue({
     icons: {
       iconfont: 'md',
     },
+    theme: {
+      options: {
+        customProperties: true,
+      },
+      themes: {
+        dark: {
+          primary: '#2A2D2F',
+          secondary: '#383B3E',
+          anchor: '#45484B',
+        },
+        light: {
+          primary: '#DCDCDC',
+          secondary: '#DCDCDC',
+          anchor: '#BDBDBD',
+        }
+      },
+      dark: true
+    }
   }),
   
 }).$mount('#app')

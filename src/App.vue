@@ -2,7 +2,7 @@
   <div id="app">
     <v-app>
       <header>
-          <v-toolbar dark>
+          <v-toolbar color="secondary">
             <v-spacer></v-spacer>
             <v-avatar size="60" tile>
               <v-img src="/logo.png"> 
@@ -25,7 +25,7 @@
               <v-btn href="https://dero.io" text>Home</v-btn>
               <v-btn href="https://wallet.dero.io" text>Web Wallet</v-btn>
               <dropdown name="Stats" :items="this.statsItems"></dropdown>
-            <v-btn @click="changeTheme()" dark text><span><v-icon dark>invert_colors</v-icon></span></v-btn>
+            <v-btn @click="changeTheme()" dark text><span :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'"><v-icon>invert_colors</v-icon></span></v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -41,14 +41,14 @@
             flat
             tile
             width="100%"
-            dark
+            color="secondary"
             class="text-center"
           >
             <v-card-text>
               dERokevAZEZVJ2N7o39VH81BXBqX9ojtncnPTDMyiVbmYiTXQY93AUCLcor9xsWCKWhYy25ja89ikZWXWab9kXRB7LYfUmbQyS
             </v-card-text>
             <v-divider></v-divider>
-            <v-card-text class="white--text">
+            <v-card-text>
               {{ new Date().getFullYear() }} — <strong>DERO Explorer</strong>
             </v-card-text>
           </v-card>
@@ -60,6 +60,7 @@
 <script>
 import dropdown from './components/Dropdown'
 import * as explorer from './explorer'
+import * as wasm from './wasm'
 
 export default {
   name: 'app',
@@ -77,11 +78,7 @@ export default {
         {
           title: "Retro Stats",
           href: "https://network.dero.io"
-        }/*,
-        {
-          title: "Stats",
-          to: "/stats"
-        }*/
+        }
       ],
       menu: [
         { icon: 'home', title: 'Link A' },
@@ -93,13 +90,14 @@ export default {
     }
   },
   mounted() {
+    wasm.useWASM()
     if (localStorage.theme) {
       this.$vuetify.theme.dark = localStorage.theme == "dark"
     } else {
       this.$vuetify.theme.dark = true
     }
   },
-  methods: { /* eslint-disable no-console */
+  methods: {
     async searchFunc() {
         if (this.search) {
             let block = await explorer.loadBlock(this.search)
@@ -108,7 +106,7 @@ export default {
             }
             else if (this.search.length == 64) {
               let tx = explorer.loadTxs(this.search)
-              // TODO, fix loadTxs first.
+
               if (tx && tx.status != "TX NOT FOUND") {
                 this.$router.push('/tx/' + this.search)
               }
@@ -140,6 +138,7 @@ export default {
 #app {
   text-align: center;
   color: white;
+  background: var(--v-anchor-base);
 }
 
 * {

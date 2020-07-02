@@ -56,6 +56,7 @@ export async function loadBlocks(pos, size)
     for (let i = 0; i < size; i++)
     {
         let block = await loadBlock(pos - i)
+        console.log(block)
         if (block) {
             blocks.push(block)
         }

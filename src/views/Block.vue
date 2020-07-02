@@ -1,14 +1,14 @@
 <template>
     <div id="block">
         <div id="main">
-            <h2 :class="{ 'title-color': !$vuetify.theme.dark }" class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.TopoHeight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.Hash}}</small></h2>
+            <h2 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="title">Block<a :href="previous()"><v-icon>keyboard_arrow_left</v-icon></a>{{block.TopoHeight}}<a :href="next()"><v-icon>keyboard_arrow_right</v-icon></a><small class="bh">{{block.Hash}}</small></h2>
             <div v-for="(hash, i) in block.Tips" :key="i">
-                <h5 :class="{ 'title-color': !$vuetify.theme.dark }" class="previous-block">Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
+                <h5 :style="$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="previous-block" >Previous Block: <small @click="goTo('/block/' + hash)">{{ hash }}</small></h5>
             </div>
         </div>
         <v-divider class="div"></v-divider>
         <div id="boxes">
-            <v-card dark class="block-info">
+            <v-card color="primary" class="block-info">
             <ul>
                 <li>Topo Height (unique): <span>{{explorer.formatSupply(block.TopoHeight)}}</span></li>
                 <li>Block Height: <span>{{explorer.formatSupply(block.Height)}}</span></li>
@@ -16,7 +16,7 @@
                 <li>Timestamp: <span>{{new Date(block.Timestamp * 1000).toLocaleString()}}</span></li>
             </ul>
             </v-card>
-            <v-card dark class="block-info">
+            <v-card color="primary" class="block-info">
             <ul>
                 <li>Hashrate: <span>{{ explorer.formatSupply((block.Difficulty/(info.target*1000*1000)).toFixed(2)) }} MH/s</span></li>
                 <li>Difficulty: <span>{{explorer.formatSupply(block.Difficulty)}}</span></li>
@@ -24,7 +24,7 @@
                 <li>Nonce: <span>{{explorer.formatSupply(block.Nonce)}}</span></li>
             </ul>
             </v-card>
-            <v-card dark class="block-info">
+            <v-card color="primary" class="block-info">
             <ul>
                 <li>Minor / Major Version: <span>{{ block.Minor_Version }} / {{ block.Major_Version }}</span></li>
                 <li>Block Size: <span>{{ block.Size }} kB</span></li>
@@ -35,8 +35,8 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">Miner reward transaction</h1>
-            <v-simple-table dark id="table">
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">Miner reward transaction</h1>
+            <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -59,8 +59,8 @@
         </div>
           <v-divider class="div"></v-divider>
         <div>
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">{{ block.Tx_Count }} Transactions</h1>
-            <v-simple-table dark id="table">
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">{{ block.Tx_Count }} Transactions</h1>
+            <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -107,8 +107,8 @@ export default {
         }
     },
     async mounted() {
+        await wasm.waitWASM()
         this.info = await explorer.getInfo()
-        await wasm.useWASM()
         this.block = await wasm.loadFullBlock(this.blockID)
     },
     methods: {
@@ -176,12 +176,7 @@ ul {
 }
 
 a:link, a:visited, a:active {
-    color: white;
     text-decoration: none;
-}
-
-span {
-    color: hsla(0,0%,100%,.7);
 }
 
 .bh {
@@ -195,6 +190,13 @@ span {
 .div {
     margin-top: 1%;
     margin-bottom: 1%;
+}
+
+.theme--dark.v-data-table {
+    background-color: var(--v-primary-base);
+}
+.theme--light.v-data-table {
+    background-color: var(--v-primary-base);
 }
 
 .previous-block {

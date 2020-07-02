@@ -1,14 +1,14 @@
 <template>
     <div id="tx">
         <div id="main" class="extra">
-            <h2 :class="{ 'title-color': !$vuetify.theme.dark }" class="title">Tx Hash: <small class="bh">{{tx.Hash}}</small></h2>
-            <h5 :class="{ 'title-color': !$vuetify.theme.dark }" class="sub-title">Prefix Hash: <small>{{tx.PrefixHash}}</small></h5>
+            <h2 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="title">Tx Hash: <small class="bh">{{tx.Hash}}</small></h2>
+            <h5 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="sub-title">Prefix Hash: <small>{{tx.PrefixHash}}</small></h5>
             <!--<h5 class="sub-title">Block (valid): <small>{{tx.ValidBlock}}</small></h5>-->
-            <h5 :class="{ 'title-color': !$vuetify.theme.dark }" class="sub-title">Public Key: <small>{{tx.TXpublickey}}</small></h5>
+            <h5 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="sub-title">Public Key: <small>{{tx.TXpublickey}}</small></h5>
         </div>
         <v-divider class="div"></v-divider>
         <div id="card">
-            <v-card dark class="tx-info">
+            <v-card color="primary" class="tx-info">
             <ul>
                 <li>Timestamp: <span>{{new Date(tx.Timestamp * 1000).toLocaleString()}}</span></li>
                 <li>Block Topo Height: <span>{{ explorer.formatSupply(tx.Height) }}</span></li>
@@ -16,7 +16,7 @@
                 <li>Signature Type: <span>{{ tx.Type }}</span></li>
             </ul>
             </v-card>
-            <v-card dark class="tx-info">
+            <v-card color="primary" class="tx-info">
             <ul>
                 <li>Fee: <span>{{ parseFloat(tx.Feeuint64 / 1000000000000).toFixed(5) }} DERO</span></li>
                 <li>No of Confirmations: <span>{{ tx.Depth }}</span></li>
@@ -27,14 +27,14 @@
         </div>
         <v-divider class="div"></v-divider>
         <div class="extra">
-            <h4 :class="{ 'title-color': !$vuetify.theme.dark }" v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
-            <h4 :class="{ 'title-color': !$vuetify.theme.dark }" v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
-            <h4 :class="{ 'title-color': !$vuetify.theme.dark }">Extra: <small class="bh">{{ tx.Extra }}</small></h4>
+            <h4 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" v-if="tx.PayID8 != ''">Encrypted PaymentID: <small class="bh">{{ tx.PayID8 }}</small></h4>
+            <h4 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'" v-if="tx.PayID32 != ''">PaymentID: <small class="bh">{{ tx.PayID32 }}</small></h4>
+            <h4 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">Extra: <small class="bh">{{ tx.Extra }}</small></h4>
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">Block</h1>
-            <v-simple-table dark id="table">
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">Block</h1>
+            <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -54,8 +54,8 @@
         </div>
         <v-divider class="div"></v-divider>
         <div>
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">Outputs ({{ tx.OutAddress.length }})</h1>
-            <v-simple-table dark id="table">
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">Outputs ({{ tx.OutAddress.length }})</h1>
+            <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -76,10 +76,10 @@
         </div>
         <v-divider v-show="tx.Keyimages.length > 0" class="div"></v-divider>
         <div v-show="tx.Keyimages.length > 0">
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">Inputs ({{ tx.Keyimages.length }})</h1>
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">Inputs ({{ tx.Keyimages.length }})</h1>
             <div v-for="(ki, i) in tx.Keyimages" :key="i">
-                <h5 :class="{ 'title-color': !$vuetify.theme.dark }" class="ki">{{ i }}: Key Image {{ ki }}</h5>
-                <v-simple-table dark id="table">
+                <h5 :style="$vuetify.theme.dark ? 'color: white;' : 'color: black;'" class="ki">{{ i }}: Key Image {{ ki }}</h5>
+                <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -123,10 +123,9 @@ export default {
 
         if (this.txHash.length == 64)
         {
-            await wasm.useWASM()
+            await wasm.waitWASM()
             let result = await wasm.parseTx(this.txHash)
             /* eslint-disable no-console */
-            console.log(result)
             this.tx = result[0]
 
             if (!this.tx.Keyimages)
@@ -190,13 +189,16 @@ ul {
     margin-top: 2%;
 }
 
-span {
-    color: hsla(0,0%,100%,.7);
-}
-
 .sub-title {
     text-align: left;
     margin-left: 15%;
+}
+
+.theme--dark.v-data-table {
+    background-color: var(--v-primary-base);
+}
+.theme--light.v-data-table {
+    background-color: var(--v-primary-base);
 }
 
 .tx-info {

@@ -1,7 +1,7 @@
 <template>
     <div id="index">
         <div id="boxes">
-            <v-card class="box" dark elevation="10">
+            <v-card class="box" :loading="!infoReady ? 'info' : false" color="primary" elevation="10">
                 <v-card-title>NETWORK INFORMATION</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
@@ -17,7 +17,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card class="box" dark elevation="10">
+            <v-card class="box" :loading="!poolReady ? 'info' : false" color="primary" elevation="10">
                 <v-card-title>MEM POOL<h5 class="subtitle">({{ txs.length }} transactions)</h5></v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
@@ -26,32 +26,18 @@
                     </ul>
                 </v-card-text>
             </v-card>
-            <v-card dark class="box" elevation="10">
+            <v-card class="box" :loading="!chartReady ? 'info' : false" color="primary" elevation="10">
                 <v-card-title>HASHRATE CHART</v-card-title>
                 <v-divider></v-divider>
-                <div v-if="ready">
+                <div v-if="chartReady">
                     <apexchart type="line" :options="networkChart.options" :series="networkChart.datas"></apexchart>
                 </div>
             </v-card>
-            <!--<v-card dark class="box" elevation="10">
-                <v-card-title>PRICE INFORMATION</v-card-title>
-                <v-divider></v-divider>
-                <v-card-text>
-                    <ul class="net-info">
-                        <li><strong>Rank:</strong> {{ explorer.formatSupply(coinGecko.market_cap_rank) }}</li>
-                        <li><strong>Market Cap:</strong> {{ explorer.formatSupply(coinGecko.marketcap) }} USD</li>
-                        <li><strong>Price:</strong> {{ coinGecko.priceUSD }} USD / {{ coinGecko.priceBTC }} BTC</li>
-                        <li><strong>ATH:</strong> {{ coinGecko.ATHpriceUSD }} USD / {{ coinGecko.ATHpriceBTC }} BTC</li>
-                        <li><strong>ATL:</strong> {{ coinGecko.ATLpriceUSD }} USD / {{ coinGecko.ATLpriceBTC }} BTC</li>
-                        <li><strong>24h Volume:</strong> {{ explorer.formatSupply(coinGecko.volume24hUSD) }} USD / {{ explorer.formatSupply(coinGecko.volume24hBTC) }} BTC</li>
-                    </ul>
-                </v-card-text>
-            </v-card>-->
         </div>
         <v-divider></v-divider>
         <div class="lb"> <!-- Latest blocks -->
-            <h1 :class="{ 'title-color': !$vuetify.theme.dark }">LATEST BLOCKS</h1>
-            <v-simple-table dark id="table">
+            <h1 :style="this.$vuetify.theme.dark ? 'color: white;' : 'color: black;'">LATEST BLOCKS</h1>
+            <v-simple-table id="table">
                 <template v-slot:default>
                 <thead>
                     <tr>
@@ -61,7 +47,6 @@
                     <th class="text-center">Tx</th>
                     <th class="text-center">Block Hash</th>
                     <th class="text-center">Block Reward</th>
-                    <!--<th class="text-center">Size (kB)</th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +57,6 @@
                     <td>{{ block.block_header.txcount }}</td>
                     <td>{{ block.block_header.hash }}</td>
                     <td>{{ (block.block_header.reward / 1000000000000).toFixed(4) }} <img src="/logo.png" align="center" height="25px" width="25px" /></td>
-                    <!--<td>0</td>-->
                     </tr>
                 </tbody>
                 </template>
@@ -95,49 +79,41 @@ export default {
             txs: [],
             info: {},
             blocks: [],
-            /*coinGecko: {
-                priceUSD: 0,
-                priceBTC: 0,
-                volume24hUSD: 0,
-                volume24hBTC: 0,
-                ATHpriceUSD: 0,
-                ATHpriceBTC: 0,
-                ATLpriceUSD: 0,
-                ATLpriceBTC: 0,
-                marketcap: 0,
-                market_cap_rank: 0,
-            },*/
             explorer,
             networkChart: {},
-            ready: false
+            poolReady: false,
+            infoReady: false,
+            chartReady: false
         }
     },
-    async mounted() {                  
-          /*fetch("https://api.coingecko.com/api/v3/coins/dero?localization=en&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false")
-            .then(result => result.json()).then(result => {
-                this.coinGecko.priceUSD = result.market_data.current_price.usd
-                this.coinGecko.priceBTC = result.market_data.current_price.btc
-                this.coinGecko.volume24hUSD = result.market_data.total_volume.usd
-                this.coinGecko.volume24hBTC = result.market_data.total_volume.btc
-                this.coinGecko.ATHpriceUSD = result.market_data.ath.usd
-                this.coinGecko.ATHpriceBTC = result.market_data.ath.btc
-                this.coinGecko.ATLpriceUSD = result.market_data.atl.usd
-                this.coinGecko.ATLpriceBTC = result.market_data.atl.btc
-                this.coinGecko.marketcap = result.market_data.market_cap.usd
-                this.coinGecko.market_cap_rank = result.market_data.market_cap_rank
-            })*/
+    async mounted() {
+        explorer.getTxsPool().then(pool => {
+            if (pool.txs)
+                this.txs = pool.txs
+            this.poolReady = true
+        })
 
-          let pool = await explorer.getTxsPool()
+        explorer.getInfo().then(info => {
+            this.info = info
+            this.infoReady = true
 
-          if (pool.txs)
-            this.txs = pool.txs
-
-          this.info = await explorer.getInfo()
-          this.blocks = await explorer.loadBlocks(this.info.topoheight, 15)
+            explorer.loadBlocks(this.info.topoheight, 15).then(blocks => {
+                this.blocks = blocks
+            })
+        })
 
         await chart.init()
         this.networkChart = chart.hashrateChart()
-        this.ready = true
+
+        //...
+        if (this.$vuetify.theme.dark) {
+            this.networkChart.options.chart.background = this.$vuetify.theme.themes.dark.primary
+            
+        } else {
+            this.networkChart.options.chart.background = this.$vuetify.theme.themes.light.primary
+            this.networkChart.options.chart.foreColor = "black"
+        }
+        this.chartReady = true
 
           setInterval(() => {
               explorer.getInfo().then(info => {
@@ -205,6 +181,16 @@ ul li {
     padding: 0;
     margin-bottom: 2%;
 }
+h1 {
+    color: black;
+}
+
+.theme--dark.v-data-table {
+    background-color: var(--v-primary-base);
+}
+.theme--light.v-data-table {
+    background-color: var(--v-primary-base);
+}
 
 .mempool {
     text-align: center;
@@ -219,7 +205,6 @@ ul li {
     font-weight: 400;
     line-height: 1.375rem;
     letter-spacing: .0071428571em;
-    color: hsla(0,0%,100%,.7);
 }
 
 .lb {

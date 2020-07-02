@@ -1,9 +1,14 @@
 import * as explorer from './explorer'
 /* eslint-disable */
 const go = new Go();
+let wasmReady = false
 
 export async function useWASM()
 {
+    if (wasmReady) {
+        console.log("WASM already ready!!")
+    }
+
     if (!WebAssembly.instantiateStreaming) { // polyfill
         WebAssembly.instantiateStreaming = async (resp, importObject) => {
             const source = await (await resp).arrayBuffer();
@@ -14,6 +19,20 @@ export async function useWASM()
     let result = await WebAssembly.instantiateStreaming(fetch("/main.wasm"), go.importObject)
     go.run(result.instance);
     console.log(testWASM())
+    wasmReady = true
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+ }
+
+export async function waitWASM()
+{
+    while (!wasmReady)
+    {
+        console.log("Waiting WASM...")
+        await sleep(150)
+    }
 }
 
 export function addMinerTxToBlock(block)

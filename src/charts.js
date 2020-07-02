@@ -19,9 +19,7 @@ function createChart(title, name, categories = [], data = [])
 {
     const options = {
         chart: {
-          //height: 500,
           type: 'line',
-          background: '#424242',
           toolbar: {
               show: false
           },
@@ -32,7 +30,7 @@ function createChart(title, name, categories = [], data = [])
             left: 2,
             blur: 3,
             opacity: 1
-          },
+          }
         },
         theme: {
             mode: 'dark', 
@@ -44,10 +42,7 @@ function createChart(title, name, categories = [], data = [])
                 shadeIntensity: 0.65
             },
         },
-        /*stroke: {
-          width: 7,
-          curve: 'smooth'
-        },*/
+        
         xaxis: {
           type: 'string',
           categories: [],
@@ -55,16 +50,12 @@ function createChart(title, name, categories = [], data = [])
               show: false
           }
         },
-        /*title: {
-          text: 'No Text',
-          align: 'center',
-          style: {
-            fontSize: "24px"
-          }
-        },*/
+        markers: {
+            colors: ['black']
+        },
         fill: {
-          type: 'gradient',
-          gradient: {
+          type: 'solid',
+          /*gradient: {
             shade: 'dark',
             gradientToColors: ['#FDD835'],
             shadeIntensity: 1,
@@ -72,22 +63,9 @@ function createChart(title, name, categories = [], data = [])
             opacityFrom: 1,
             opacityTo: 1,
             stops: [0, 100, 100, 100]
-          },
-        }/*,
-        markers: {
-          size: 4,
-          opacity: 0.9,
-          colors: ["#FFA41B"],
-          strokeColor: "#fff",
-          strokeWidth: 2,
-          hover: {
-            size: 7,
-          }
-        }*/
+          },*/
+        }
     }
-
-    //options.title.text = title
-    title = ""
     options.xaxis.categories = categories
 
     return {
@@ -98,26 +76,6 @@ function createChart(title, name, categories = [], data = [])
         options: options
     }
 }
-/*
-export function networkChart()
-{
-    const categories = []
-    const datas = []
-    let val = getNetwork()
-    let diff = []
-    let hashrate = []
-    for (let i = 0; i < cache.depth; i++)
-    {
-        categories.push(explorer.formatSupply(val[i].height))
-        diff.push(val[i].difficulty)
-        hashrate.push(val[i].hashrate)
-        
-    }
-
-    datas.push({name: "Difficulty", data: diff}, {name: "MH/s", data: hashrate})
-
-    return createChart("Network Chart", "", categories, datas)
-}*/
 
 export function difficultyChart()
 {    
@@ -202,17 +160,3 @@ function getRewards()
 
     return array
 }
-
-/*
-function getNetwork()
-{
-    const array = []
-
-    for (let i = 0; i < cache.depth; i++)
-    {
-        let block = cache.blocks[i]
-        array.push({height: block.height, difficulty: block.difficulty, hashrate: (block.difficulty/(cache.info.target*1000*1000)).toFixed(2)})
-    }
-
-    return array
-}*/
